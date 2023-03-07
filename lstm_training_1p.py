@@ -16,7 +16,7 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_1p_noisy_1.txt"
+logfile_name = "LSTM_1p_noisy_test7.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
@@ -25,9 +25,9 @@ if logging:
 window_size = 1000 # Used in pre-processing
 batch_size = 10 # Used for training
 learning_rate = 0.0001
-n_epochs = 50 # Training epochs
+n_epochs = 200 # Training epochs
 input_dim = 270
-hidden_dim = 300
+hidden_dim = 400
 layer_dim = 1
 output_dim = 5
 
@@ -37,13 +37,13 @@ if logging:
     logfile.write("\n")
 
 # Read in data
-print("Reading in data, splitting into train and test sets, and converting to tensors...")
-with open("/home/joanna/collected_data/preprocessing/noisy_data_1.pk1", "rb") as file:
+print("Reading in data and converting to tensors...")
+with open("noisy_data_1_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
-x_full = data[0]
-y_full = data[1]
-
-x_train, x_test, y_train, y_test = train_test_split(x_full, y_full, test_size=0.20, random_state=1000)
+x_train = data[0]
+x_test = data[1]
+y_train = data[2]
+y_test = data[3]
 
 # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
 x_train_tensor = Variable(torch.Tensor(x_train))
@@ -155,7 +155,6 @@ print(output_counts)
 if logging:
     logfile.write(f"\nFinal confusion matrix:\n")
     for i in range(len(cm)):
-        logfile.write(str(cm[i]))
+        logfile.write(str(cm[i]) + "\n")
         
     logfile.close()
-

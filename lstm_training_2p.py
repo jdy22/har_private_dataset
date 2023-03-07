@@ -16,7 +16,7 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_2p_noisy_test1.txt" # CHANGE ME
+logfile_name = "LSTM_2p_clean_test1.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
@@ -38,7 +38,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("noisy_data_2_fixed_length.pk1", "rb") as file:
+with open("clean_data_2_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]

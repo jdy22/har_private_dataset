@@ -6,7 +6,7 @@ from scipy import signal
 window_size = 1000
 input_dim = 270
 
-with open("/home/joanna/collected_data_preprocessing/noisy_data_2.pk1", "rb") as file:
+with open("/home/joanna/collected_data_preprocessing/clean_data_2.pk1", "rb") as file:
     data = pickle.load(file)
 x_full = data[0]
 y_full = data[1]
@@ -28,5 +28,5 @@ print(y_full.shape)
 x_train, x_test, y_train, y_test = train_test_split(x_full_resampled, y_full, test_size=0.20, random_state=1000)
 
 data = [x_train, x_test, y_train, y_test]
-with open("noisy_data_2_fixed_length.pk1", "wb") as file:
+with open("clean_data_2_fixed_length.pk1", "wb") as file:
     pickle.dump(data, file)

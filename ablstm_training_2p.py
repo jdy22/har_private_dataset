@@ -17,16 +17,16 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_2p_clean_test3.txt", "w")
+    logfile = open("ABLSTM_2p_noisy_test999.txt", "w")
 
 # Constants/parameters
-k = 1  #kernel size for av/max_pooling
+k = 4  #kernel size for av/max_pooling
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 30 # Used for training
-learning_rate = 0.00001
+batch_size = 50 # Used for training
+learning_rate = 0.0001
 n_epochs = 100# Training epochs
 input_dim = 270
-hidden_dim = 650
+hidden_dim = 450
 layer_dim = 1
 output_dim = 5
 
@@ -38,7 +38,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/clean_data_2_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/noisy_data_2_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]
@@ -90,10 +90,7 @@ class LSTMModel(nn.Module):
             self.D = 1
 
         # attention layer 
-        self.use_attention = use_attention
-
-        if self.use_attention:
-            self.attention = nn.Linear(window_size*(self.D)*hidden_dim, window_size, bias=True,device=device) 
+        self.attention = nn.Linear(window_size*(self.D)*hidden_dim, window_size, bias=True,device=device) 
             # see eqn 3,4,5 in the paper
 
         # Output layer (linear combination of last outputs)
@@ -118,13 +115,13 @@ class LSTMModel(nn.Module):
         # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
 
         
-        if self.use_attention:
-            softmax = nn.Softmax(dim=-1)
-            relu = nn.ReLU()
-            attention = softmax(relu(self.attention(out.flatten(start_dim=1,end_dim=-1)))) # attention
-            attention = attention.unsqueeze(-1)
-            attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
-            out = torch.mul(attention, out) #merge
+        
+        softmax = nn.Softmax(dim=-1)
+        relu = nn.ReLU()
+        attention = softmax(relu(self.attention(out.flatten(start_dim=1,end_dim=-1)))) # attention
+        attention = attention.unsqueeze(-1)
+        attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
+        out = torch.mul(attention, out) #merge
         out = out.flatten(start_dim=1,end_dim=-1) #flatten layer        
         out = self.fc(out) 
 

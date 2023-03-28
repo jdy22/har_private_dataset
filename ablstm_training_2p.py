@@ -17,16 +17,16 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_2p_clean_test1.txt", "w")
+    logfile = open("ABLSTM_2p_clean_test3.txt", "w")
 
 # Constants/parameters
-k = 4  #kernel size for av/max_pooling
+k = 1  #kernel size for av/max_pooling
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 50 # Used for training
-learning_rate = 0.0001
+batch_size = 30 # Used for training
+learning_rate = 0.00001
 n_epochs = 100# Training epochs
 input_dim = 270
-hidden_dim = 400
+hidden_dim = 650
 layer_dim = 1
 output_dim = 5
 

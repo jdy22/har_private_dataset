@@ -17,16 +17,16 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_clean_test1.txt", "w")
+    logfile = open("ABLSTM_1p_noisy_test6.txt", "w")
 
 # Constants/parameters
-k = 4  #kernel size & stride for av/max_pooling
+k = 1  #kernel size & stride for av/max_pooling
 window_size = int(1000/k) # Used in pre-processing
 batch_size = 50 # Used for training
-learning_rate = 0.0001
-n_epochs = 100 # Training epochs
+learning_rate = 0.000001
+n_epochs = 200 # Training epochs
 input_dim = 270
-hidden_dim = 400
+hidden_dim = 700
 layer_dim = 1
 output_dim = 5
 
@@ -39,7 +39,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/clean_data_1_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/noisy_data_1_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]

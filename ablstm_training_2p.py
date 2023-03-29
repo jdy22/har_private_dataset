@@ -17,13 +17,14 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_2p_noisy_test999.txt", "w")
+    logfile = open("ABLSTM_2p_noisy_test001.txt", "w")
 
 # Constants/parameters
-k = 4  #kernel size for av/max_pooling
+k = 1  #kernel size for av/max_pooling before lstm
+k_2 = 4 # kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
 batch_size = 50 # Used for training
-learning_rate = 0.0001
+learning_rate = 0.00001
 n_epochs = 100# Training epochs
 input_dim = 270
 hidden_dim = 450
@@ -32,7 +33,7 @@ output_dim = 5
 
 if logging:
     logfile.write("Attention Bi-LSTM with Av. Poolin 2 persons\n")
-    logfile.write(f"K size: {k}, Window size: {window_size}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
+    logfile.write(f"K size: k:{k} and k_2:{k_2}, Window sizes: before LSTM:{window_size} and before atten:{int(window_size/k_2)}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
     logfile.write(f"Input dimension: {input_dim}, hidden dimension: {hidden_dim}, layer dimension: {layer_dim}, output dimension: {output_dim}\n")
     logfile.write("\n")
 
@@ -90,11 +91,11 @@ class LSTMModel(nn.Module):
             self.D = 1
 
         # attention layer 
-        self.attention = nn.Linear(window_size*(self.D)*hidden_dim, window_size, bias=True,device=device) 
+        self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int(window_size/k_2), bias=True,device=device) 
             # see eqn 3,4,5 in the paper
 
         # Output layer (linear combination of last outputs)
-        self.fc = nn.Linear(window_size*(self.D)*hidden_dim, output_dim)
+        self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
 
 
@@ -110,11 +111,15 @@ class LSTMModel(nn.Module):
         h0 = h0.to(device=device)
         c0 = c0.to(device=device)
         out, (hn, cn) = self.lstm(x, (h0.detach(), c0.detach()))
+        avg_pool_2d = torch.nn.AvgPool2d(kernel_size=(k_2, 1), padding=0, stride=(k_2,1)) 
+        out = out.unsqueeze(1)
+        out = avg_pool_2d(out)
+        out = out.squeeze(1)
 
         # out.size() --> batch_size, seq_dim, hidden_dim
         # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
 
-        
+
         
         softmax = nn.Softmax(dim=-1)
         relu = nn.ReLU()

@@ -17,10 +17,11 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_clean_test999.txt", "w")
+    logfile = open("ABLSTM_1p_clean_test001.txt", "w")
 
 # Constants/parameters
-k = 4  #kernel size & stride for av/max_pooling
+k = 1  #kernel size & stride for av pooling before lstm
+k_2 = 4 # kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
 batch_size = 50 # Used for training
 learning_rate = 0.00001
@@ -33,7 +34,7 @@ output_dim = 5
 if logging:
     logfile.write("Attention Bi-LSTM with Av. Poolin 1 person\n")
 
-    logfile.write(f"K size: {k}, Window size: {window_size}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
+    logfile.write(f"K size: k:{k} and k_2{k_2}, Window sizes: before LSTM:{window_size} and before atten:{int(window_size/k_2)}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
     logfile.write(f"Input dimension: {input_dim}, hidden dimension: {hidden_dim}, layer dimension: {layer_dim}, output dimension: {output_dim}\n")
     logfile.write("\n")
 
@@ -56,7 +57,6 @@ y_test_tensor = Variable(torch.Tensor(y_test)).to(device=device)
 
 # max_pool = nn.MaxPool1d(kernel_size=k, stride=k)
 avg_pool = nn.AvgPool1d(kernel_size=k, stride=k, count_include_pad=False)
-
 x_train_tensor = x_train_tensor.unsqueeze(1)
 x_train_tensor = avg_pool(x_train_tensor)
 x_train_tensor = x_train_tensor.squeeze(1)
@@ -93,11 +93,11 @@ class LSTMModel(nn.Module):
 
         # attention layer 
         
-        self.attention = nn.Linear(window_size*(self.D)*hidden_dim, window_size, bias=True,device=device) 
+        self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int(window_size/k_2), bias=True,device=device) 
             # see eqn 3,4,5 in the paper
 
         # Output layer (linear combination of last outputs)
-        self.fc = nn.Linear(window_size*(self.D)*hidden_dim, output_dim)
+        self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
 
 
@@ -113,11 +113,13 @@ class LSTMModel(nn.Module):
         h0 = h0.to(device=device)
         c0 = c0.to(device=device)
         out, (hn, cn) = self.lstm(x, (h0.detach(), c0.detach()))
-
+        avg_pool_2d = torch.nn.AvgPool2d(kernel_size=(k_2, 1), padding=0, stride=(k_2,1)) 
+        out = out.unsqueeze(1)
+        out = avg_pool_2d(out)
+        out = out.squeeze(1)
+        # avg_pool_2 = nn.AvgPool1d(kernel_size=k, stride=k, count_include_pad=False)
         # out.size() --> batch_size, seq_dim, hidden_dim
         # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-
-        
         
         softmax = nn.Softmax(dim=-1)
         relu = nn.ReLU()

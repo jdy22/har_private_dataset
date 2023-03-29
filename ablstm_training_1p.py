@@ -73,7 +73,7 @@ print("Creating LSTM model, loss function and optimiser...")
 # LSTM model class
 class LSTMModel(nn.Module):
     # def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim, batch_first=True, bidirectional=True, use_attention=True): 
+    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim, batch_first=True, bidirectional=True): 
         super(LSTMModel, self).__init__()
         # Number of hidden units
         self.hidden_dim = hidden_dim
@@ -134,7 +134,7 @@ class LSTMModel(nn.Module):
 
         return out
 
-model = LSTMModel(input_dim, hidden_dim, layer_dim, output_dim, use_attention=False) 
+model = LSTMModel(input_dim, hidden_dim, layer_dim, output_dim) 
 loss_function = nn.CrossEntropyLoss()
 optimiser = torch.optim.Adam(model.parameters(), lr=learning_rate)
 

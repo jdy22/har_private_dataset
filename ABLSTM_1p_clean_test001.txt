@@ -1,0 +1,16 @@
+Attention Bi-LSTM with Av. Poolin 1 person
+K size: k:1 and k_24, Window sizes: before LSTM:1000 and before atten:250, batch size: 50, learning rate: 1e-05, epochs: 200
+Input dimension: 270, hidden dimension: 300, layer dimension: 1, output dimension: 5
+
+Model loss after 1 epochs = 1.6091853380203247, accuracy = 0.23333334922790527
+Model loss after 2 epochs = 1.6089248657226562, accuracy = 0.24166667461395264
+Model loss after 3 epochs = 1.607304334640503, accuracy = 0.36666667461395264
+Model loss after 4 epochs = 1.6043776273727417, accuracy = 0.5250000357627869
+Model loss after 5 epochs = 1.600615382194519, accuracy = 0.5166667103767395
+Model loss after 6 epochs = 1.5964657068252563, accuracy = 0.5166667103767395
+Model loss after 7 epochs = 1.5912162065505981, accuracy = 0.5333333611488342
+Model loss after 8 epochs = 1.5848957300186157, accuracy = 0.5750000476837158
+Model loss after 9 epochs = 1.5778146982192993, accuracy = 0.5750000476837158
+Model loss after 10 epochs = 1.569753646850586, accuracy = 0.6000000238418579
+Model loss after 11 epochs = 1.5606460571289062, accuracy = 0.6250000596046448
+Model loss after 12 epochs = 1.549993634223938, accuracy = 0.6333333849906921

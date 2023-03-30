@@ -17,24 +17,24 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_clean_test001.txt", "w")
+    logfile = open("ABLSTM_1p_clean_test003.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size & stride for av pooling before lstm
-k_2 = 4 # kernel size & stride for av pooling before attention
+k_2 = 4# kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 50 # Used for training
+batch_size = 30 # Used for training
 learning_rate = 0.00001
 n_epochs = 200 # Training epochs
 input_dim = 270
-hidden_dim = 300
+hidden_dim = 400
 layer_dim = 1
 output_dim = 5
 
 if logging:
     logfile.write("Attention Bi-LSTM with Av. Poolin 1 person\n")
 
-    logfile.write(f"K size: k:{k} and k_2{k_2}, Window sizes: before LSTM:{window_size} and before atten:{int(window_size/k_2)}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
+    logfile.write(f"K size: k:{k} and k_2:{k_2}, Window sizes: before LSTM:{window_size} and before atten:{int(window_size/k_2)}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
     logfile.write(f"Input dimension: {input_dim}, hidden dimension: {hidden_dim}, layer dimension: {layer_dim}, output dimension: {output_dim}\n")
     logfile.write("\n")
 
@@ -93,7 +93,10 @@ class LSTMModel(nn.Module):
 
         # attention layer 
         
-        self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int(window_size/k_2), bias=True,device=device) 
+        # self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int((window_size/k_2)**2), bias=True,device=device) 
+        # self.attention = nn.Linear(int((self.D)*hidden_dim), int(1), bias=True,device=device) 
+        self.attention = nn.MultiheadAttention(int(hidden_dim*self.D),1, bias=True, device=device) 
+
             # see eqn 3,4,5 in the paper
 
         # Output layer (linear combination of last outputs)
@@ -117,17 +120,19 @@ class LSTMModel(nn.Module):
         out = out.unsqueeze(1)
         out = avg_pool_2d(out)
         out = out.squeeze(1)
-        # avg_pool_2 = nn.AvgPool1d(kernel_size=k, stride=k, count_include_pad=False)
+        # print(out.shape)
         # out.size() --> batch_size, seq_dim, hidden_dim
         # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
         
-        softmax = nn.Softmax(dim=-1)
-        relu = nn.ReLU()
-        attention = softmax(relu(self.attention(out.flatten(start_dim=1,end_dim=-1)))) # attention
-        attention = attention.unsqueeze(-1)
-        attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
-        out = torch.mul(attention, out) #merge
-        out = out.flatten(start_dim=1,end_dim=-1) #flatten layer        
+    
+        attention_output, attention_weights = self.attention(out, out, out)
+        # print(attention.shape)
+        # attention = torch.reshape(attention, (attention.shape[0], int(window_size/k_2), -1))
+        # print(attention.shape)
+        # attention = attention.unsqueeze(-1)
+        # attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
+        # out = torch.bmm(attention, out) #merge
+        out = attention_output.flatten(start_dim=1,end_dim=-1) #flatten layer        
         out = self.fc(out) 
 
         # Apply softmax activation to output

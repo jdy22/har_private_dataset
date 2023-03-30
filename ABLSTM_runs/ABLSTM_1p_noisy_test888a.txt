@@ -1,0 +1,111 @@
+Attention Bi-LSTM with Av. Poolin 1 person
+K size: k:1 and k_2:1, Window sizes: before LSTM:1000 and before atten:1000, batch size: 30, learning rate: 1e-05, epochs: 100
+Input dimension: 270, hidden dimension: 500, layer dimension: 1, output dimension: 5
+
+Model loss after 1 epochs = 1.5140869617462158, accuracy = 0.3750000298023224
+Model loss after 2 epochs = 1.5116769075393677, accuracy = 0.36666667461395264
+Model loss after 3 epochs = 1.4947413206100464, accuracy = 0.3916666805744171
+Model loss after 4 epochs = 1.4690930843353271, accuracy = 0.42500001192092896
+Model loss after 5 epochs = 1.4616121053695679, accuracy = 0.4333333671092987
+Model loss after 6 epochs = 1.361202597618103, accuracy = 0.5666667222976685
+Model loss after 7 epochs = 1.2956594228744507, accuracy = 0.6416667103767395
+Model loss after 8 epochs = 1.2434560060501099, accuracy = 0.675000011920929
+Model loss after 9 epochs = 1.217408299446106, accuracy = 0.7250000238418579
+Model loss after 10 epochs = 1.1968140602111816, accuracy = 0.7166666984558105
+Model loss after 11 epochs = 1.1807688474655151, accuracy = 0.7166666984558105
+Model loss after 12 epochs = 1.1650294065475464, accuracy = 0.7416667342185974
+Model loss after 13 epochs = 1.1609032154083252, accuracy = 0.7500000596046448
+Model loss after 14 epochs = 1.1498013734817505, accuracy = 0.7583333849906921
+Model loss after 15 epochs = 1.1403712034225464, accuracy = 0.7666667103767395
+Model loss after 16 epochs = 1.146181344985962, accuracy = 0.7500000596046448
+Model loss after 17 epochs = 1.1605747938156128, accuracy = 0.7416667342185974
+Model loss after 18 epochs = 1.1064841747283936, accuracy = 0.8000000715255737
+Model loss after 19 epochs = 1.094087839126587, accuracy = 0.8083333969116211
+Model loss after 20 epochs = 1.0786505937576294, accuracy = 0.8333333730697632
+Model loss after 21 epochs = 1.0908558368682861, accuracy = 0.8333333730697632
+Model loss after 22 epochs = 1.0728888511657715, accuracy = 0.8333333730697632
+Model loss after 23 epochs = 1.0605533123016357, accuracy = 0.8583333492279053
+Model loss after 24 epochs = 1.091660976409912, accuracy = 0.8166667222976685
+Model loss after 25 epochs = 1.0276116132736206, accuracy = 0.8916667103767395
+Model loss after 26 epochs = 1.0415194034576416, accuracy = 0.8750000596046448
+Model loss after 27 epochs = 1.0547282695770264, accuracy = 0.8666667342185974
+Model loss after 28 epochs = 1.0531985759735107, accuracy = 0.8666667342185974
+Model loss after 29 epochs = 1.0469989776611328, accuracy = 0.8583333492279053
+Model loss after 30 epochs = 1.050524115562439, accuracy = 0.8500000238418579
+Model loss after 31 epochs = 1.0426784753799438, accuracy = 0.8750000596046448
+Model loss after 32 epochs = 1.0450493097305298, accuracy = 0.8666667342185974
+Model loss after 33 epochs = 1.0436787605285645, accuracy = 0.8666667342185974
+Model loss after 34 epochs = 1.0431857109069824, accuracy = 0.8666667342185974
+Model loss after 35 epochs = 1.0435537099838257, accuracy = 0.8666667342185974
+Model loss after 36 epochs = 1.0436785221099854, accuracy = 0.8666667342185974
+Model loss after 37 epochs = 1.0439298152923584, accuracy = 0.8666667342185974
+Model loss after 38 epochs = 1.0423766374588013, accuracy = 0.8666667342185974
+Model loss after 39 epochs = 1.0410066843032837, accuracy = 0.8666667342185974
+Model loss after 40 epochs = 1.0414916276931763, accuracy = 0.8666667342185974
+Model loss after 41 epochs = 1.0407567024230957, accuracy = 0.8666667342185974
+Model loss after 42 epochs = 1.0410891771316528, accuracy = 0.8666667342185974
+Model loss after 43 epochs = 1.0405381917953491, accuracy = 0.8666667342185974
+Model loss after 44 epochs = 1.0403145551681519, accuracy = 0.8666667342185974
+Model loss after 45 epochs = 1.0401109457015991, accuracy = 0.8666667342185974
+Model loss after 46 epochs = 1.0398576259613037, accuracy = 0.8666667342185974
+Model loss after 47 epochs = 1.0396056175231934, accuracy = 0.8666667342185974
+Model loss after 48 epochs = 1.0398145914077759, accuracy = 0.8666667342185974
+Model loss after 49 epochs = 1.0394874811172485, accuracy = 0.8666667342185974
+Model loss after 50 epochs = 1.0393441915512085, accuracy = 0.8666667342185974
+Model loss after 51 epochs = 1.0392787456512451, accuracy = 0.8666667342185974
+Model loss after 52 epochs = 1.0392102003097534, accuracy = 0.8666667342185974
+Model loss after 53 epochs = 1.0389810800552368, accuracy = 0.8666667342185974
+Model loss after 54 epochs = 1.0389043092727661, accuracy = 0.8666667342185974
+Model loss after 55 epochs = 1.038696527481079, accuracy = 0.8666667342185974
+Model loss after 56 epochs = 1.0386710166931152, accuracy = 0.8666667342185974
+Model loss after 57 epochs = 1.0386284589767456, accuracy = 0.8666667342185974
+Model loss after 58 epochs = 1.0385075807571411, accuracy = 0.8666667342185974
+Model loss after 59 epochs = 1.0387042760849, accuracy = 0.8666667342185974
+Model loss after 60 epochs = 1.0390279293060303, accuracy = 0.8666667342185974
+Model loss after 61 epochs = 1.0389130115509033, accuracy = 0.8666667342185974
+Model loss after 62 epochs = 1.038973331451416, accuracy = 0.8666667342185974
+Model loss after 63 epochs = 1.0388970375061035, accuracy = 0.8666667342185974
+Model loss after 64 epochs = 1.038852572441101, accuracy = 0.8666667342185974
+Model loss after 65 epochs = 1.0388950109481812, accuracy = 0.8666667342185974
+Model loss after 66 epochs = 1.0389283895492554, accuracy = 0.8666667342185974
+Model loss after 67 epochs = 1.0389188528060913, accuracy = 0.8666667342185974
+Model loss after 68 epochs = 1.0387969017028809, accuracy = 0.8666667342185974
+Model loss after 69 epochs = 1.038712978363037, accuracy = 0.8666667342185974
+Model loss after 70 epochs = 1.0385628938674927, accuracy = 0.8666667342185974
+Model loss after 71 epochs = 1.0383557081222534, accuracy = 0.8750000596046448
+Model loss after 72 epochs = 1.0383046865463257, accuracy = 0.8750000596046448
+Model loss after 73 epochs = 1.0380151271820068, accuracy = 0.8750000596046448
+Model loss after 74 epochs = 1.0376808643341064, accuracy = 0.8750000596046448
+Model loss after 75 epochs = 1.0376588106155396, accuracy = 0.8750000596046448
+Model loss after 76 epochs = 1.0376075506210327, accuracy = 0.8750000596046448
+Model loss after 77 epochs = 1.0374480485916138, accuracy = 0.8750000596046448
+Model loss after 78 epochs = 1.0373938083648682, accuracy = 0.8750000596046448
+Model loss after 79 epochs = 1.0373547077178955, accuracy = 0.8750000596046448
+Model loss after 80 epochs = 1.037360668182373, accuracy = 0.8750000596046448
+Model loss after 81 epochs = 1.037325143814087, accuracy = 0.8750000596046448
+Model loss after 82 epochs = 1.037211537361145, accuracy = 0.8750000596046448
+Model loss after 83 epochs = 1.0370943546295166, accuracy = 0.8750000596046448
+Model loss after 84 epochs = 1.037010908126831, accuracy = 0.8750000596046448
+Model loss after 85 epochs = 1.037011742591858, accuracy = 0.8750000596046448
+Model loss after 86 epochs = 1.0368001461029053, accuracy = 0.8750000596046448
+Model loss after 87 epochs = 1.0365501642227173, accuracy = 0.8750000596046448
+Model loss after 88 epochs = 1.0366512537002563, accuracy = 0.8750000596046448
+Model loss after 89 epochs = 1.0366485118865967, accuracy = 0.8750000596046448
+Model loss after 90 epochs = 1.036636233329773, accuracy = 0.8750000596046448
+Model loss after 91 epochs = 1.0366781949996948, accuracy = 0.8750000596046448
+Model loss after 92 epochs = 1.0366078615188599, accuracy = 0.8750000596046448
+Model loss after 93 epochs = 1.0365054607391357, accuracy = 0.8750000596046448
+Model loss after 94 epochs = 1.0364164113998413, accuracy = 0.8750000596046448
+Model loss after 95 epochs = 1.0362571477890015, accuracy = 0.8750000596046448
+Model loss after 96 epochs = 1.0362215042114258, accuracy = 0.8750000596046448
+Model loss after 97 epochs = 1.0362707376480103, accuracy = 0.8750000596046448
+Model loss after 98 epochs = 1.0361969470977783, accuracy = 0.8750000596046448
+Model loss after 99 epochs = 1.036210536956787, accuracy = 0.8750000596046448
+Model loss after 100 epochs = 1.0360667705535889, accuracy = 0.8750000596046448
+
+Final confusion matrix:
+[0.9 0.  0.  0.1 0. ]
+[0. 1. 0. 0. 0.]
+[0.   0.04 0.84 0.12 0.  ]
+[0.09375 0.0625  0.03125 0.8125  0.     ]
+[0.    0.125 0.    0.    0.875]

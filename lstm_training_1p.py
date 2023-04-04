@@ -16,7 +16,7 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_1p_clean_test1.txt" # CHANGE ME
+logfile_name = "LSTM_1p_noisy_test8.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
@@ -24,10 +24,10 @@ if logging:
 # Constants/parameters
 window_size = 1000 # Used in pre-processing
 batch_size = 10 # Used for training
-learning_rate = 0.0001
-n_epochs = 200 # Training epochs
+learning_rate = 0.00005
+n_epochs = 600 # Training epochs
 input_dim = 270
-hidden_dim = 400
+hidden_dim = 300
 layer_dim = 1
 output_dim = 5
 
@@ -38,7 +38,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("clean_data_1_fixed_length.pk1", "rb") as file:
+with open("noisy_data_1_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]

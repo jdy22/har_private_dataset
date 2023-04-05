@@ -1,3 +1,6 @@
+# LSTM training with different preprocessing to convert inputs to fixed length
+# Take first 3000 packets for each data point and average pool to window size of 1000
+
 import numpy as np
 import pickle
 import torch
@@ -17,7 +20,7 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_1p_noisy_test17.txt" # CHANGE ME
+logfile_name = "LSTM_1p_clean_test1_pool.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
@@ -25,26 +28,45 @@ if logging:
 # Constants/parameters
 window_size = 1000 # Used in pre-processing
 batch_size = 10 # Used for training
-learning_rate = 0.00001
-n_epochs = 2000 # Training epochs
+learning_rate = 0.00005
+n_epochs = 600 # Training epochs
 input_dim = 270
-hidden_dim = 400
+hidden_dim = 300
 layer_dim = 1
 output_dim = 5
 
 if logging:
+    logfile.write("With preprocessing via pooling rather than resampling")
     logfile.write(f"Window size: {window_size}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
     logfile.write(f"Input dimension: {input_dim}, hidden dimension: {hidden_dim}, layer dimension: {layer_dim}, output dimension: {output_dim}\n")
     logfile.write("\n")
 
 # Read in data
-print("Reading in data and converting to tensors...")
-with open("noisy_data_1_fixed_length.pk1", "rb") as file:
+print("Reading in data and preprocessing...")
+with open("/home/joanna/collected_data_preprocessing/clean_data_1.pk1", "rb") as file:
     data = pickle.load(file)
-x_train = data[0]
-x_test = data[1]
-y_train = data[2]
-y_test = data[3]
+x_full = data[0]
+y_full = data[1]
+
+x_full_cut = []
+y_full_cut = []
+for i in range(len(x_full)):
+    x_original = x_full[i]
+    y_original = y_full[i]
+
+    x_original = np.reshape(x_original, (-1, input_dim))
+    x_cut = x_original[:3000, :]
+    x_cut = np.reshape(x_cut, -1)
+
+    if len(x_cut) == 810000:
+        x_full_cut.append(x_cut)
+        y_full_cut.append(y_original)
+
+x_full_cut = np.vstack(x_full_cut)
+y_full_cut = np.vstack(y_full_cut)
+
+# Split into training and testing data (80/20)
+x_train, x_test, y_train, y_test = train_test_split(x_full_cut, y_full_cut, test_size=0.20, random_state=1000)
 
 # Split training data into train and val data (80/20)
 x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
@@ -55,8 +77,22 @@ x_test_tensor = Variable(torch.Tensor(x_train_val)).to(device=device)
 y_train_tensor = Variable(torch.Tensor(y_train_train))
 y_test_tensor = Variable(torch.Tensor(y_train_val)).to(device=device)
 
-x_train_tensor = torch.reshape(x_train_tensor, (x_train_tensor.shape[0], window_size, -1))
-x_test_tensor = torch.reshape(x_test_tensor, (x_test_tensor.shape[0], window_size, -1))
+x_train_tensor = torch.reshape(x_train_tensor, (x_train_tensor.shape[0], -1, input_dim))
+x_test_tensor = torch.reshape(x_test_tensor, (x_test_tensor.shape[0], -1, input_dim))
+
+# Use average pooling to reduce window size
+avg_pool = nn.AvgPool2d(kernel_size=(3,1))
+
+x_train_tensor = x_train_tensor.unsqueeze(1)
+x_train_tensor = avg_pool(x_train_tensor)
+x_train_tensor = x_train_tensor.squeeze(1)
+
+x_test_tensor = x_test_tensor.unsqueeze(1)
+x_test_tensor = avg_pool(x_test_tensor)
+x_test_tensor = x_test_tensor.squeeze(1)
+
+print(x_train_tensor.shape)
+print(x_test_tensor.shape)
 
 # Instantiate LSTM model and loss function
 print("Creating LSTM model, loss function and optimiser...")

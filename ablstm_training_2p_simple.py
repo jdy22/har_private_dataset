@@ -27,7 +27,7 @@ batch_size = 30 # Used for training
 learning_rate = 0.00001
 n_epochs = 100# Training epochs
 input_dim = 270
-hidden_dim = 400
+hidden_dim = 300
 layer_dim = 1
 output_dim = 5
 

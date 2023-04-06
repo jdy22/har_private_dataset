@@ -15,24 +15,28 @@ else:
 
 print(device)
 
+# bs = [10, 30, 50]
+# k2 = [1, 2]
+# lr = [0.00005, 0.00001, 0.000005]
+
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_noisy_test888b.txt", "w")
+    logfile = open("ABLSTM_1p_clean_test3_mha.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size & stride for av pooling before lstm
-k_2 = 1# kernel size & stride for av pooling before attention
+k_2 = 1 # kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 30 # Used for training
+batch_size = 50 # Used for training
 learning_rate = 0.00001
 n_epochs = 100 # Training epochs
 input_dim = 270
-hidden_dim = 600
+hidden_dim = 400
 layer_dim = 1
 output_dim = 5
 
 if logging:
-    logfile.write("Attention Bi-LSTM with Av. Poolin 1 person\n")
+    logfile.write("Attention Bi-LSTM with Av. Poolin 1 person & MHA\n")
 
     logfile.write(f"K size: k:{k} and k_2:{k_2}, Window sizes: before LSTM:{window_size} and before atten:{int(window_size/k_2)}, batch size: {batch_size}, learning rate: {learning_rate}, epochs: {n_epochs}\n")
     logfile.write(f"Input dimension: {input_dim}, hidden dimension: {hidden_dim}, layer dimension: {layer_dim}, output dimension: {output_dim}\n")
@@ -40,7 +44,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/noisy_data_1_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/clean_data_1_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]

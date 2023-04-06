@@ -17,13 +17,13 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_noisy_test000.txt", "w")
+    logfile = open("ABLSTM_1p_noisy_test1_simple.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size & stride for av pooling before lstm
 k_2 = 10# kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 30 # Used for training
+batch_size = 10 # Used for training
 learning_rate = 0.00001
 n_epochs = 100 # Training epochs
 input_dim = 270

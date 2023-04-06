@@ -21,14 +21,14 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_clean_test3_mha.txt", "w")
+    logfile = open("ABLSTM_1p_clean_test6_mha.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size & stride for av pooling before lstm
 k_2 = 1 # kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
 batch_size = 50 # Used for training
-learning_rate = 0.00001
+learning_rate = 0.000005
 n_epochs = 100 # Training epochs
 input_dim = 270
 hidden_dim = 400

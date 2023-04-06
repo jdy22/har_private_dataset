@@ -17,14 +17,14 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_2p_noisy_test2_mha.txt", "w")
+    logfile = open("ABLSTM_2p_clean_test6_mha.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size for av/max_pooling before lstm
 k_2 = 1 # kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 30 # Used for training
-learning_rate = 0.00001
+batch_size = 50 # Used for training
+learning_rate = 0.000005
 n_epochs = 100 # Training epochs
 input_dim = 270
 hidden_dim = 400
@@ -39,7 +39,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/noisy_data_2_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/clean_data_2_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]

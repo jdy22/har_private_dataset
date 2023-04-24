@@ -2,7 +2,6 @@ import numpy as np
 import pickle
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
@@ -17,7 +16,7 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_1p_noisy_test17.txt" # CHANGE ME
+logfile_name = "LSTM_1p_noisy_final.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
@@ -26,7 +25,7 @@ if logging:
 window_size = 1000 # Used in pre-processing
 batch_size = 10 # Used for training
 learning_rate = 0.00001
-n_epochs = 2000 # Training epochs
+n_epochs = 1000 # Training epochs
 input_dim = 270
 hidden_dim = 400
 layer_dim = 1
@@ -46,14 +45,19 @@ x_test = data[1]
 y_train = data[2]
 y_test = data[3]
 
-# Split training data into train and val data (80/20)
-x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
+# # Split training data into train and val data (80/20)
+# x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
 
-# Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
-x_train_tensor = Variable(torch.Tensor(x_train_train))
-x_test_tensor = Variable(torch.Tensor(x_train_val)).to(device=device)
-y_train_tensor = Variable(torch.Tensor(y_train_train))
-y_test_tensor = Variable(torch.Tensor(y_train_val)).to(device=device)
+# # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
+# x_train_tensor = torch.Tensor(x_train_train)
+# x_test_tensor = torch.Tensor(x_train_val).to(device=device)
+# y_train_tensor = torch.Tensor(y_train_train)
+# y_test_tensor = torch.Tensor(y_train_val).to(device=device)
+
+x_train_tensor = torch.Tensor(x_train)
+x_test_tensor = torch.Tensor(x_test).to(device=device)
+y_train_tensor = torch.Tensor(y_train)
+y_test_tensor = torch.Tensor(y_test).to(device=device)
 
 x_train_tensor = torch.reshape(x_train_tensor, (x_train_tensor.shape[0], window_size, -1))
 x_test_tensor = torch.reshape(x_test_tensor, (x_test_tensor.shape[0], window_size, -1))
@@ -152,9 +156,9 @@ cm = confusion_matrix(labels.cpu(), torch.argmax(predictions, dim=1).cpu(), norm
 print("Confusion matrix:")
 print(cm)
 
-output_labels, output_counts = torch.unique(torch.argmax(predictions, dim=1).cpu(), return_counts=True)
-print(output_labels)
-print(output_counts)
+# output_labels, output_counts = torch.unique(torch.argmax(predictions, dim=1).cpu(), return_counts=True)
+# print(output_labels)
+# print(output_counts)
 
 if logging:
     logfile.write(f"\nFinal confusion matrix:\n")

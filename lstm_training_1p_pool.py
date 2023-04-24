@@ -5,7 +5,6 @@ import numpy as np
 import pickle
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
@@ -72,10 +71,10 @@ x_train, x_test, y_train, y_test = train_test_split(x_full_cut, y_full_cut, test
 x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
 
 # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
-x_train_tensor = Variable(torch.Tensor(x_train_train))
-x_test_tensor = Variable(torch.Tensor(x_train_val)).to(device=device)
-y_train_tensor = Variable(torch.Tensor(y_train_train))
-y_test_tensor = Variable(torch.Tensor(y_train_val)).to(device=device)
+x_train_tensor = torch.Tensor(x_train_train)
+x_test_tensor = torch.Tensor(x_train_val).to(device=device)
+y_train_tensor = torch.Tensor(y_train_train)
+y_test_tensor = torch.Tensor(y_train_val).to(device=device)
 
 x_train_tensor = torch.reshape(x_train_tensor, (x_train_tensor.shape[0], -1, input_dim))
 x_test_tensor = torch.reshape(x_test_tensor, (x_test_tensor.shape[0], -1, input_dim))

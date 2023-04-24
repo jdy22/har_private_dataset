@@ -2,9 +2,64 @@ import numpy as np
 import pickle
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import multilabel_confusion_matrix
-from sklearn.model_selection import train_test_split
+from numpy.random import default_rng
+
+
+def k_fold_split(n_splits, n_instances, random_generator):
+    """ Split n_instances into n mutually exclusive splits at random.
+    
+    Args:
+        n_splits (int): Number of splits
+        n_instances (int): Number of instances to split
+        random_generator (np.random generator): A random generator
+
+    Returns:
+        list: a list (length n_splits). Each element in the list should contain a 
+            numpy array giving the indices of the instances in that split.
+    """
+    # Generate a random permutation of indices from 0 to n_instances
+    shuffled_indices = random_generator.permutation(n_instances)
+
+    # Split shuffled indices into almost equal sized splits
+    split_indices = np.array_split(shuffled_indices, n_splits)
+
+    return split_indices
+
+
+def train_test_k_fold(n_folds, n_instances, random_generator=default_rng(seed=1000)):
+    """ Generate train and test indices at each fold.
+    
+    Args:
+        n_folds (int): Number of folds
+        n_instances (int): Total number of instances
+        random_generator (np.random generator): A random generator
+
+    Returns:
+        list: a list of length n_folds. Each element in the list is a list (or tuple) 
+            with two elements: a numpy array containing the train indices, and another 
+            numpy array containing the test indices.
+    """
+    # Split the dataset into k splits
+    split_indices = k_fold_split(n_folds, n_instances, random_generator)
+
+    folds = []
+    for k in range(n_folds):
+        # Pick k as test
+        test_indices = split_indices[k]
+
+        # Combine remaining splits as train
+        train_indices = np.hstack(split_indices[:k] + split_indices[k+1:])
+
+        folds.append([train_indices, test_indices])
+
+    return folds
+
+
+n_folds = 5 # Total number of folds for cross-validation
+fold = 4 # Current fold
 
 USE_GPU = True
 
@@ -16,18 +71,20 @@ else:
 print(device)
 
 logging = True
-logfile_name = "LSTM_2p_clean_final.txt" # CHANGE ME
+logfile_name = f"LSTM_final_fold{fold}.txt" # CHANGE ME
 
 if logging:
     logfile = open(logfile_name, "w")
+
+outfile_name = f"LSTM_predictions_fold{fold}.txt"
 
 # Constants/parameters
 window_size = 1000 # Used in pre-processing
 batch_size = 10 # Used for training
 learning_rate = 0.00001
-n_epochs = 2000 # Training epochs
+n_epochs = 1000 # Training epochs
 input_dim = 270
-hidden_dim = 300
+hidden_dim = 400
 layer_dim = 1
 output_dim = 5
 
@@ -38,26 +95,56 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("clean_data_2_fixed_length.pk1", "rb") as file:
-    data = pickle.load(file)
-x_train = data[0]
-x_test = data[1]
-y_train = data[2]
-y_test = data[3]
+with open("clean_data_2_fixed_length.pk1", "rb") as file1:
+    data1 = pickle.load(file1)
+x_train1 = data1[0]
+x_test1 = data1[1]
+y_train1 = data1[2]
+y_test1 = data1[3]
 
-# # Split training data into train and val data (80/20)
-# x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
+with open("noisy_data_2_fixed_length.pk1", "rb") as file2:
+    data2 = pickle.load(file2)
+x_train2 = data2[0]
+x_test2 = data2[1]
+y_train2 = data2[2]
+y_test2 = data2[3]
 
-# # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
-# x_train_tensor = torch.Tensor(x_train_train)
-# x_test_tensor = torch.Tensor(x_train_val).to(device=device)
-# y_train_tensor = torch.Tensor(y_train_train)
-# y_test_tensor = torch.Tensor(y_train_val).to(device=device)
+with open("clean_data_1_fixed_length.pk1", "rb") as file3:
+    data3 = pickle.load(file3)
+x_train3 = data3[0]
+x_test3 = data3[1]
+y_train3 = data3[2]
+y_test3 = data3[3]
 
-x_train_tensor = torch.Tensor(x_train)
-x_test_tensor = torch.Tensor(x_test).to(device=device)
-y_train_tensor = torch.Tensor(y_train)
-y_test_tensor = torch.Tensor(y_test).to(device=device)
+with open("noisy_data_1_fixed_length.pk1", "rb") as file4:
+    data4 = pickle.load(file4)
+x_train4 = data4[0]
+x_test4 = data4[1]
+y_train4 = data4[2]
+y_test4 = data4[3]
+
+x_train = np.vstack((x_train1, x_train2, x_train3, x_train4))
+x_test = np.vstack((x_test1, x_test2, x_test3, x_test4))
+y_train = np.vstack((y_train1, y_train2, y_train3, y_train4))
+y_test = np.vstack((y_test1, y_test2, y_test3, y_test4))
+
+x_full = np.vstack((x_train, x_test))
+y_full = np.vstack((y_train, y_test))
+
+# Split data into train and test data (80/20) based on fold number
+fold_indices = train_test_k_fold(n_folds, len(x_full))
+train_indices, test_indices = fold_indices[fold]
+
+x_train_fold = x_full[train_indices,]
+y_train_fold = y_full[train_indices,]
+x_test_fold = x_full[test_indices,]
+y_test_fold = y_full[test_indices,]
+
+# Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
+x_train_tensor = torch.Tensor(x_train_fold)
+x_test_tensor = torch.Tensor(x_test_fold).to(device=device)
+y_train_tensor = torch.Tensor(y_train_fold)
+y_test_tensor = torch.Tensor(y_test_fold).to(device=device)
 
 x_train_tensor = torch.reshape(x_train_tensor, (x_train_tensor.shape[0], window_size, -1))
 x_test_tensor = torch.reshape(x_test_tensor, (x_test_tensor.shape[0], window_size, -1))
@@ -171,3 +258,9 @@ if logging:
             logfile.write(str(cm[i, j]) + "\n")
         
     logfile.close()
+
+# Write out predictions of final model
+outfile = open(outfile_name, "w")
+for i in range(len(predictions)):
+    outfile.write(f"True labels: {labels[i, :]}, predicted labels: {(predictions[i, :] > 0.5).long()}\n")
+outfile.close()

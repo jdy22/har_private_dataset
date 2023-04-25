@@ -109,6 +109,42 @@ def analyse_false_positives(activity, true_labels, predictions):
     return fp_total, fp_percentages.round(3)
 
 
+def calc_recall(true_labels, predictions):
+    # Calculate overall recall per activity
+    n_activities = len(true_labels[0])
+    recalls = np.zeros(n_activities)
+
+    for activity in range(n_activities):
+        tp = 0
+        fn = 0
+        for i in range(len(true_labels)):
+            if true_labels[i][activity] == "1" and predictions[i][activity] == "1":
+                tp += 1
+            elif true_labels[i][activity] == "1" and predictions[i][activity] == "0":
+                fn += 1
+        recalls[activity] = tp/(tp+fn)
+
+    return recalls.round(3)
+
+
+def calc_precision(true_labels, predictions):
+    # Calculate overall precision per activity
+    n_activities = len(true_labels[0])
+    precisions = np.zeros(n_activities)
+
+    for activity in range(n_activities):
+        tp = 0
+        fp = 0
+        for i in range(len(true_labels)):
+            if true_labels[i][activity] == "1" and predictions[i][activity] == "1":
+                tp += 1
+            elif true_labels[i][activity] == "0" and predictions[i][activity] == "1":
+                fp += 1
+        precisions[activity] = tp/(tp+fp)
+
+    return precisions.round(3)
+
+
 if __name__ == "__main__":
     filenames = [
         "./LSTM_final/LSTM_predictions_fold0.txt",
@@ -125,7 +161,7 @@ if __name__ == "__main__":
     print(counts) 
     print()
 
-    print("Average accuracies:")
+    print("Accuracy:")
     accuracies = calc_accuracy(true_labels, predictions)
     print(f"Per activity = {accuracies}, overall = {np.sum(accuracies)/len(accuracies)}")
     print()
@@ -140,3 +176,19 @@ if __name__ == "__main__":
     for activity in range(5):
         fp_total, fp_percentages = analyse_false_positives(activity, true_labels, predictions)
         print(f"Activity {activity}: {int(fp_total)} false positives, percentages = {fp_percentages}")
+    print()
+
+    print("Recall:")
+    recalls = calc_recall(true_labels, predictions)
+    print(f"Per activity = {recalls}, overall = {np.sum(recalls)/len(recalls)}")
+    print()
+
+    print("Precision:")
+    precisions = calc_precision(true_labels, predictions)
+    print(f"Per activity = {precisions}, overall = {np.sum(precisions)/len(precisions)}")
+    print()
+
+    print("F1-scores:")
+    f1_scores = 2*recalls*precisions / (recalls+precisions)
+    print(f"Per activity = {f1_scores.round(3)}, overall = {np.sum(f1_scores)/len(f1_scores)}")
+    print()

@@ -17,14 +17,14 @@ print(device)
 
 logging = True
 if logging:
-    logfile = open("ABLSTM_1p_clean_test6_simple.txt", "w")
+    logfile = open("ABLSTM_1p_noisy_best.txt", "w")
 
 # Constants/parameters
 k = 1  #kernel size & stride for av pooling before lstm
 k_2 = 10# kernel size & stride for av pooling before attention
 window_size = int(1000/k) # Used in pre-processing
-batch_size = 50 # Used for training
-learning_rate = 0.000005
+batch_size = 10 # Used for training
+learning_rate = 0.00001
 n_epochs = 50 # Training epochs
 input_dim = 270
 hidden_dim = 400
@@ -40,7 +40,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/clean_data_1_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/noisy_data_1_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]
@@ -48,14 +48,21 @@ y_train = data[2]
 y_test = data[3]
 
 # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
-x_train_tensor = Variable(torch.Tensor(x_train))
-x_test_tensor = Variable(torch.Tensor(x_test)).to(device=device)
-y_train_tensor = Variable(torch.Tensor(y_train))
-y_test_tensor = Variable(torch.Tensor(y_test)).to(device=device)
+x_train_tensor = torch.Tensor(x_train)
+x_test_tensor = torch.Tensor(x_test).to(device=device)
+y_train_tensor = torch.Tensor(y_train)
+y_test_tensor = torch.Tensor(y_test).to(device=device)
+
+# # Split training data into train and val data (80/20)
+# x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
+
+# # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
+# x_train_tensor = torch.Tensor(x_train_train)
+# x_test_tensor = torch.Tensor(x_train_val).to(device=device)
+# y_train_tensor = torch.Tensor(y_train_train)
+# y_test_tensor = torch.Tensor(y_train_val).to(device=device)
 
 #incorporate av/max pooling
-
-# max_pool = nn.MaxPool1d(kernel_size=k, stride=k)
 avg_pool = nn.AvgPool1d(kernel_size=k, stride=k, count_include_pad=False)
 x_train_tensor = x_train_tensor.unsqueeze(1)
 x_train_tensor = avg_pool(x_train_tensor)
@@ -92,10 +99,6 @@ class LSTMModel(nn.Module):
             self.D = 1
 
         # attention layer 
-        
-        # self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int((window_size/k_2)**2), bias=True,device=device) 
-        # self.attention = nn.Linear(int((self.D)*hidden_dim), int(1), bias=True,device=device) 
-        # self.attention = nn.MultiheadAttention(int(hidden_dim*self.D),1, bias=True, device=device) 
         self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int((window_size/k_2)**2), bias=True,device=device) 
 
             # see eqn 3,4,5 in the paper

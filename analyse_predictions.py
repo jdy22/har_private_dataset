@@ -147,11 +147,11 @@ def calc_precision(true_labels, predictions):
 
 if __name__ == "__main__":
     filenames = [
-        "./LSTM_final/LSTM_predictions_fold0.txt",
-        "./LSTM_final/LSTM_predictions_fold1.txt",
-        "./LSTM_final/LSTM_predictions_fold2.txt",
-        "./LSTM_final/LSTM_predictions_fold3.txt",
-        "./LSTM_final/LSTM_predictions_fold4.txt",
+        "./ABLSTM_final/ABLSTM_predictions_fold0.txt",
+        "./ABLSTM_final/ABLSTM_predictions_fold1.txt",
+        "./ABLSTM_final/ABLSTM_predictions_fold2.txt",
+        "./ABLSTM_final/ABLSTM_predictions_fold3.txt",
+        "./ABLSTM_final/ABLSTM_predictions_fold4.txt",
     ]
 
     true_labels, predictions = get_predictions(filenames)

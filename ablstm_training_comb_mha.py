@@ -8,7 +8,6 @@ from sklearn.metrics import multilabel_confusion_matrix
 from sklearn.utils import shuffle
 
 
-
 USE_GPU = True
 
 if USE_GPU and torch.cuda.is_available():
@@ -85,13 +84,21 @@ x_test, y_test = shuffle(X_test, Y_test, random_state=1000)
 
 
 # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
-x_train_tensor = Variable(torch.Tensor(x_train))
-x_test_tensor = Variable(torch.Tensor(x_test)).to(device=device)
-y_train_tensor = Variable(torch.Tensor(y_train))
-y_test_tensor = Variable(torch.Tensor(y_test)).to(device=device)
+x_train_tensor = torch.Tensor(x_train)
+x_test_tensor = torch.Tensor(x_test).to(device=device)
+y_train_tensor = torch.Tensor(y_train)
+y_test_tensor = torch.Tensor(y_test).to(device=device)
 
-#incorporate av/max pooling
-# max_pool = nn.MaxPool1d(kernel_size=k, stride=k)
+# # Split training data into train and val data (80/20)
+# x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
+
+# # Convert to torch tensors, move to GPU and reshape x into sequential data (3D)
+# x_train_tensor = torch.Tensor(x_train_train)
+# x_test_tensor = torch.Tensor(x_train_val).to(device=device)
+# y_train_tensor = torch.Tensor(y_train_train)
+# y_test_tensor = torch.Tensor(y_train_val).to(device=device)
+
+#incorporate av pooling
 avg_pool = nn.AvgPool1d(kernel_size=k, stride=k, count_include_pad=False)
 
 x_train_tensor = x_train_tensor.unsqueeze(1)

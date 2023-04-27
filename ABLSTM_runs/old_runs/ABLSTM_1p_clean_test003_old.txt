@@ -1,4 +1,0 @@
-Attention Bi-LSTM with Av. Poolin 1 person
-K size: k:1 and k_2:4, Window sizes: before LSTM:1000 and before atten:250, batch size: 10, learning rate: 1e-05, epochs: 200
-Input dimension: 270, hidden dimension: 200, layer dimension: 1, output dimension: 5
-

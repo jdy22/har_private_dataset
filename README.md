@@ -1,92 +1,43 @@
-# LSTM_model
+# Introduction:
+This repository contains the pre-processing, model training, and hyperparameter tuning codes for the LSTM and ABLSTM models on the JCP3A dataset.
 
+## Datasets:
+In order to train or run any of the files in this model repository, the corresponding data files must be located in your directory. 
 
+### JCP3A Dataset:
+Due to the size of the JCP3A dataset, it has not been provided in the repositories. However, the dataset can be accessed by contacting Julie McCann at Imperial College London. 
 
-## Getting started
+## Raw Data Preprocessing:
+Prior to running any of the individual files in this repository, the raw data preprocessing files located in “collected_data_preprocessing” repository (https://gitlab.doc.ic.ac.uk/g22mai03/collected_data_preprocessing) must be run on the JCP3A dataset. Please ensure that any data paths defined in the python files are changed to be compatible with your local directory. A more detailed description on running these files can be found in this repository’s README file. 
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### JCP3A Raw Data Preprocessing:
+To run the raw data preprocessing on the JCP3A dataset, run the respective python files:
+* 1 Person Clean: “process_clean_data_1.py”
+* 2 Person Clean: “process_clean_data_2.py”
+* 1 Person Noisy: “process_noisy_data_1.py”
+* 2 Person Noisy: “process_noisy_data_2.py”
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Preprocessing:
+The "fixed_length_preprocessing.py" file must be run on each of the sub-datasets of the JCP3A dataset, changing the input and output file paths in lines 9 and 31 depending on the target sub-dataset (1 Person Clean, 2 Person Clean, 1 Person Noisy or 2 Person Noisy).
 
-## Add your files
+## Model Training:
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### LSTM:
 
-```
-cd existing_repo
-git remote add origin https://gitlab.doc.ic.ac.uk/g22mai03/lstm_model.git
-git branch -M master
-git push -uf origin master
-```
+The "lstm_final.py" file will train the LSTM model on the full JCP3A dataset. The best hyperparameter settings for the combined model have been saved in this file. The "lstm_training_1p.py" and "lstm_training_2p.py" files can be used to train the LSTM model on the sub-datasets. These files are configured with the best hyperparameter settings and input data for the noisy datasets. The hyperparameters can be changed in lines 25-32 and the input data can be changed to the clean datasets in line 41. The test loss and accuracy per epoch, as well as the final accuracy and confusion matrices will be printed to the terminal. If "logging" in line 73 for "lstm_final.py" and line 18 for "lstm_training_1p.py" and "lstm_training_2p.py" is set to "True", this information will also be saved to the text file specified in line 74/19.
 
-## Integrate with your tools
+### ABLSTM:
 
-- [ ] [Set up project integrations](https://gitlab.doc.ic.ac.uk/g22mai03/lstm_model/-/settings/integrations)
+## Hyperparameter Tuning:
 
-## Collaborate with your team
+### LSTM:
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+The "lstm_training_combined.py" file can be used for hyperparameter tuning of the LSTM model on the full JCP3A dataset. The hyperparameters can be changed in lines 25-32. The "lstm_training_1p.py" and "lstm_training_2p.py" files can be used for hyperparameter tuning on the sub-datasets. These files are currently configured to run on the noisy datasets. The hyperparameters can be changed in lines 25-32 and the input data can be changed to the clean datasets in line 41. For the "lstm_training_1p.py" and "lstm_training_2p.py" files, the validation set should be changed from the held-out test set to the internal validation set in lines 48-55 if performing hyperparameter tuning. The validation loss and accuracy per epoch, as well as the final accuracy and confusion matrices will be printed to the terminal. If "logging" in line 18 is set to "True", this information will also be saved to the text file specified in line 19.
 
-## Test and Deploy
+### ABLSTM:
 
-Use the built-in continuous integration in GitLab.
+## Archives:
+Old code files and logs have been stored in the archives folder of this repository for record-purposes.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## References:
+[1] Siamak Yousefi, Hirokazu Narui, Sankalp Dayal, Stefano Ermon, and Shahrokh Valaee. A survey on behavior recognition using wifi channel state information. IEEE Communications Magazine, 55(10):98–104, 2017.

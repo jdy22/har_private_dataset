@@ -52,6 +52,7 @@ x_test_tensor = torch.Tensor(x_test).to(device=device)
 y_train_tensor = torch.Tensor(y_train)
 y_test_tensor = torch.Tensor(y_test).to(device=device)
 
+
 # # Split training data into train and val data (80/20)
 # x_train_train, x_train_val, y_train_train, y_train_val = train_test_split(x_train, y_train, test_size=0.20, random_state=1000)
 
@@ -106,10 +107,6 @@ class LSTMModel(nn.Module):
         # Output layer (linear combination of last outputs)
         self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
-
-
-        # bidirectional can be added thru adding to line 64 init params - "bidirectional=True"
-        # LSTM module alrd concat the outputs throughout the seq for us,
         # The outputs of the two directions of the LSTM are concatenated on the last dimension.
     def forward(self, x):
         # Initialize hidden state with zeros
@@ -124,12 +121,6 @@ class LSTMModel(nn.Module):
         out = out.unsqueeze(1)
         out = avg_pool_2d(out)
         out = out.squeeze(1)
-
-        # out.size() --> batch_size, seq_dim, hidden_dim
-        # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-
-
-        # attention_output, attention_weights = self.attention(out,out,out)
         softmax = nn.Softmax(dim=-1)
         relu = nn.ReLU()
         attention = self.attention(out.flatten(start_dim=1,end_dim=-1)) # attention

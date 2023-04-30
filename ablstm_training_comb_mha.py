@@ -7,7 +7,6 @@ from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import multilabel_confusion_matrix
 from sklearn.utils import shuffle
 
-
 USE_GPU = True
 
 if USE_GPU and torch.cuda.is_available():
@@ -136,17 +135,12 @@ class LSTMModel(nn.Module):
             self.D = 1
 
         # attention layer 
-        # self.attention = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), int(window_size/k_2), bias=True,device=device)
         self.attention = nn.MultiheadAttention(int(hidden_dim*self.D),1, bias=True, batch_first=True, device=device)  
             # see eqn 3,4,5 in the paper
 
         # Output layer (linear combination of last outputs)
         self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
-
-
-        # bidirectional can be added thru adding to line 64 init params - "bidirectional=True"
-        # LSTM module alrd concat the outputs throughout the seq for us,
         # The outputs of the two directions of the LSTM are concatenated on the last dimension.
     def forward(self, x):
         # Initialize hidden state with zeros
@@ -161,18 +155,7 @@ class LSTMModel(nn.Module):
         out = out.unsqueeze(1)
         out = avg_pool_2d(out)
         out = out.squeeze(1)
-
-        # out.size() --> batch_size, seq_dim, hidden_dim
-        # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-
-
         attention_output, attention_weights = self.attention(out, out, out)
-        # softmax = nn.Softmax(dim=-1)
-        # relu = nn.ReLU()
-        # attention = softmax(relu(self.attention(out.flatten(start_dim=1,end_dim=-1)))) # attention
-        # attention = attention.unsqueeze(-1)
-        # attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
-        # out = torch.mul(attention, out) #merge
         out = attention_output.flatten(start_dim=1,end_dim=-1) #flatten layer        
         out = self.fc(out) 
 

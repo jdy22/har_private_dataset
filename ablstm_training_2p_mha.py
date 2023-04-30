@@ -39,7 +39,7 @@ if logging:
 
 # Read in data
 print("Reading in data and converting to tensors...")
-with open("/home/joanna/lstm_model/clean_data_2_fixed_length.pk1", "rb") as file:
+with open("/home/joanna/lstm_model/noisy_data_2_fixed_length.pk1", "rb") as file:
     data = pickle.load(file)
 x_train = data[0]
 x_test = data[1]
@@ -106,9 +106,6 @@ class LSTMModel(nn.Module):
         self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
 
-
-        # bidirectional can be added thru adding to line 64 init params - "bidirectional=True"
-        # LSTM module alrd concat the outputs throughout the seq for us,
         # The outputs of the two directions of the LSTM are concatenated on the last dimension.
     def forward(self, x):
         # Initialize hidden state with zeros
@@ -123,10 +120,6 @@ class LSTMModel(nn.Module):
         out = out.unsqueeze(1)
         out = avg_pool_2d(out)
         out = out.squeeze(1)
-
-        # out.size() --> batch_size, seq_dim, hidden_dim
-        # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-
 
         attention_output, attention_weights = self.attention(out, out, out)
         out = attention_output.flatten(start_dim=1,end_dim=-1) #flatten layer        

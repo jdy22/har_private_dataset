@@ -160,10 +160,6 @@ class LSTMModel(nn.Module):
         out = avg_pool_2d(out)
         out = out.squeeze(1)
 
-        # out.size() --> batch_size, seq_dim, hidden_dim
-        # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-
-
         softmax = nn.Softmax(dim=-1)
         relu = nn.ReLU()
         attention = self.attention(out.flatten(start_dim=1,end_dim=-1)) # attention
@@ -210,8 +206,6 @@ model = model.to(device=device)
 for n_epoch in range(n_epochs):
     print(f"Starting epoch number {n_epoch+1}")
     for i, (inputs, labels) in enumerate(train_loader):
-        # if i%10 == 0:
-        #     print(f"{i} batches processed")
         inputs = inputs.to(device=device)
         labels = labels.to(device=device)
         optimiser.zero_grad()

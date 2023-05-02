@@ -106,10 +106,6 @@ class LSTMModel(nn.Module):
         # Output layer (linear combination of last outputs)
         self.fc = nn.Linear(int(window_size/k_2*(self.D)*hidden_dim), output_dim)
 
-
-
-        # bidirectional can be added thru adding to line 64 init params - "bidirectional=True"
-        # LSTM module alrd concat the outputs throughout the seq for us,
         # The outputs of the two directions of the LSTM are concatenated on the last dimension.
     def forward(self, x):
         # Initialize hidden state with zeros
@@ -124,20 +120,11 @@ class LSTMModel(nn.Module):
         out = out.unsqueeze(1)
         out = avg_pool_2d(out)
         out = out.squeeze(1)
-        # print(out.shape)
-        # out.size() --> batch_size, seq_dim, hidden_dim
-        # out[:, -1, :] --> batch_size, hidden_dim --> extract outputs from last layer
-        
-    
-        # attention_output, attention_weights = self.attention(out,out,out)
         softmax = nn.Softmax(dim=-1)
         relu = nn.ReLU()
         attention = self.attention(out.flatten(start_dim=1,end_dim=-1)) # attention
         attention = softmax(relu(attention.reshape(attention.shape[0],int(window_size/k_2),-1)))
-        # print(attention.shape)
-        # print(out.shape)
-        # attention = attention.unsqueeze(-1)
-        # attention = attention.repeat(1,1,hidden_dim*self.D) # repeat for each hidden dim
+
         out = torch.bmm(attention, out) #merge
         out = out.flatten(start_dim=1,end_dim=-1) #flatten layer        
         out = self.fc(out)
@@ -177,8 +164,6 @@ model = model.to(device=device)
 for n_epoch in range(n_epochs):
     print(f"Starting epoch number {n_epoch+1}")
     for i, (inputs, labels) in enumerate(train_loader):
-        # if i%10 == 0:
-        #     print(f"{i} batches processed")
         inputs = inputs.to(device=device)
         labels = labels.to(device=device)
         optimiser.zero_grad()
@@ -191,8 +176,6 @@ for n_epoch in range(n_epochs):
     with torch.no_grad():
         predictions = model(x_test_tensor)
         labels = torch.argmax(y_test_tensor, dim=1)
-        # print(predictions.shape)
-        # print(labels.shape)
         test_loss = loss_function(predictions, labels)
         accuracy = torch.count_nonzero(torch.argmax(predictions, dim=1)==labels)/len(predictions)
         print(f"Model loss after {n_epoch+1} epochs = {test_loss}, accuracy = {accuracy}")
